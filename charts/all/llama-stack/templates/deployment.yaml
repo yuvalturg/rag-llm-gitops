@@ -51,7 +51,7 @@ spec:
                   name: vectordb-app
                   key: dbname
             - name: VLLM_URL
-              value: http://gizmo
+              value: http://foo.local
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

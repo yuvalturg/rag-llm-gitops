@@ -21,10 +21,11 @@ volumes:
       claimName: llama-pvc
   - name: llama-stack-config
     configMap:
-      name: config.yaml
+      name: llama-stack-config
 
 volumeMounts:
   - name: llama-storage
     mountPath: /root/.llama
   - name: llama-stack-config
     mountPath: /app/config.yaml
+    subPath: config.yaml
