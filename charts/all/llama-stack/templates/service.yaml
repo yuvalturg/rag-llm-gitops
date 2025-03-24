@@ -4,7 +4,9 @@ metadata:
   name: llama-stack-service
 spec:
   selector:
-    {{ .Values.service.selector }}
+  {{- with .Values.service.selector }}
+  {{ toYaml . | indent 2 }}
+  {{- end }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.port }}

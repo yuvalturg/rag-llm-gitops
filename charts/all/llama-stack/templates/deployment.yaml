@@ -22,7 +22,8 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          terminationMessagePath: /dev/termination-log
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          command: ["python", "-m", "llama_stack.distribution.server.server", "--yaml-config", "/app/config.yaml"]
           env:
             - name: PGVECTOR_USER
               valueFrom:
@@ -51,7 +52,6 @@ spec:
                   key: dbname
             - name: VLLM_URL
               value: http://gizmo
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
