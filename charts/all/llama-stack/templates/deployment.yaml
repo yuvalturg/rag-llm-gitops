@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-stack-server
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- with .Values.service.selector }}
+      {{ toYaml . }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+      {{- with .Values.service.selector }}
+      {{ toYaml . | indent 2 }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          terminationMessagePath: /dev/termination-log
+          env:
+            - name: PGVECTOR_USER
+              valueFrom:
+                secretKeyRef:
+                  name: vectordb-app
+                  key: username
+            - name: PGVECTOR_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: vectordb-app
+                  key: password
+            - name: PGVECTOR_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: vectordb-app
+                  key: host
+            - name: PGVECTOR_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: vectordb-app
+                  key: port
+            - name: PGVECTOR_DB
+              valueFrom:
+                secretKeyRef:
+                  name: vectordb-app
+                  key: dbname
+            - name: VLLM_URL
+              value: http://gizmo
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

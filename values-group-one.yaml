@@ -14,6 +14,7 @@ clusterGroup:
     - eso
     - rag-llm
     - llm-monitoring
+    - llama-stack
   applications:
     golang-external-secrets:
       name: golang-external-secrets
@@ -31,6 +32,11 @@ clusterGroup:
       project: llm-monitoring
       kustomize: true
       path: charts/all/llm-monitoring/kustomize/overlays/dev
+    llama-stack:
+      name: llama-stack
+      namespace: llama-stack
+      project: llama-stack
+      path: charts/all/llama-stack
   imperative:
     # NOTE: We *must* use lists and not hashes. As hashes lose ordering once parsed by helm
     # The default schedule is every 10 minutes: imperative.schedule

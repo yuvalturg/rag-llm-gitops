@@ -53,6 +53,7 @@ clusterGroup:
     - hub
     - rag-llm
     - llm-monitoring
+    - llama-stack
     - gpu-config
     - openshift-ai
   # Explicitly mention the cluster-state based overrides we plan to use for this pattern.
@@ -112,7 +113,11 @@ clusterGroup:
       project: llm-monitoring
       kustomize: true
       path: charts/all/llm-monitoring/kustomize/overlays/dev
-
+    llama-stack:
+      name: llama-stack
+      namespace: llama-stack
+      project: llama-stack
+      path: charts/all/llama-stack
     nfd-config:
       name: nfd-config
       namespace: openshift-cfd
