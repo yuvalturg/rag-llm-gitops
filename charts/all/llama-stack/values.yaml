@@ -1,10 +1,15 @@
 replicaCount: 1
 
+env:
+  INFERENCE_MODEL: Qwen/Qwen2.5-1.5B-Instruct
+  VLLM_URL: http://host.crc.testing:8000/v1
+
 service:
+  name: llama-stack-service
   type: ClusterIP
-  port: 5000
+  port: 8321
   selector:
-    app.kubernetes.io/name: llama-stack
+    app.kubernetes.io/name: llama-stack-server
  
 image:
   repository: docker.io/llamastack/distribution-remote-vllm
@@ -29,3 +34,10 @@ volumeMounts:
   - name: llama-stack-config
     mountPath: /app/config.yaml
     subPath: config.yaml
+
+ui:
+  name: llama-stack-ui
+  port: 8501
+  image: quay.io/yuvalturg/llamastack-dist-ui:latest
+  selector:
+    app.kubernetes.io/name: llama-stack-ui

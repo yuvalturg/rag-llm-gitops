@@ -25,6 +25,10 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           command: ["python", "-m", "llama_stack.distribution.server.server", "--yaml-config", "/app/config.yaml"]
           env:
+          {{- range $key, $val := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $val | quote }}
+          {{- end }}
             - name: PGVECTOR_USER
               valueFrom:
                 secretKeyRef:
@@ -50,8 +54,6 @@ spec:
                 secretKeyRef:
                   name: vectordb-app
                   key: dbname
-            - name: VLLM_URL
-              value: http://foo.local
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http

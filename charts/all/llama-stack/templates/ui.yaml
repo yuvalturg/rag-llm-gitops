@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ui.name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+    {{- with .Values.ui.selector }}
+    {{ toYaml . | indent 2 }}
+    {{- end }}
+  template:
+    metadata:
+      labels:
+      {{- with .Values.ui.selector }}
+      {{ toYaml . | indent 2 }}
+      {{- end }}
+    spec:
+      containers:
+      - env:
+        - name: LLAMA_STACK_ENDPOINT
+          value: http://{{ .Values.service.name }}:{{ .Values.service.port }}
+        image: {{ .Values.ui.image }}
+        name: {{ .Chart.Name }}-ui
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ui.name }}
+spec:
+  selector:
+  {{- with .Values.ui.selector }}
+  {{ toYaml . | indent 2 }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.ui.port }}
+      targetPort: {{ .Values.ui.port }}
+      protocol: TCP
+  type: {{ .Values.service.type }}
